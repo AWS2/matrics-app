@@ -10,7 +10,7 @@
 <th colspan="3">Request : JSON
 </th></tr>
 <tr>
-<th colspan="3">POST 
+<th colspan="3">POST /api/token
 </th></tr>
 <tr>
 <th>Param
@@ -87,7 +87,7 @@
 <th colspan="3">Request : JSON
 </th></tr>
 <tr>
-<th colspan="3">GET 
+<th colspan="3">GET /api/profilesandrequirements
 </th></tr>
 <tr>
 <th>Param
@@ -151,7 +151,7 @@
 <th colspan="3">Request (url query)
 </th></tr>
 <tr>
-<th colspan="3">GET
+<th colspan="3">GET  /api/career
 </th></tr>
 <tr>
 <th>Param
@@ -290,7 +290,7 @@
 <th colspan="3">Request
 </th></tr>
 <tr>
-<th colspan="3">GET
+<th colspan="3">GET /api/user
 </th></tr>
 <tr>
 <th>Param
