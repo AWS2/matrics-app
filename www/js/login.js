@@ -9,14 +9,20 @@ let emailField = document.getElementById("emailField");
 let passwordField = document.getElementById("passwordField");
 
 // Testing
-let skipLogin = true;
+let skipLogin = false;
 
 function onDeviceReady() {
+    if(localStorage.getItem("token")){
+       console.log(localStorage.getItem("token"));
+       $("#body").addClass("custom-blur-on");
+       window.location.href = "index.html";
+    }
     loginButton.onclick = function() {
+        
         if (skipLogin) {
-                $("#body").addClass("custom-blur-on");
-                window.location.href = "index.html";
-        } else {
+            $("#body").addClass("custom-blur-on");
+            window.location.href = "index.html";
+        }else {
             if (validateFieldsLogin()) {
                 $("#loading").modal('open');
                 ajaxLogin();
@@ -37,7 +43,7 @@ function ajaxLogin() {
     formData.append("password", passwordField.value.toString());
 
     $.ajax({
-        url: "http://3.220.37.220:8000/api/token",
+        url: urlAjax + "/api/token",
         type: "POST",
         data: formData,
         processData: false,  // tell jQuery not to process the data
