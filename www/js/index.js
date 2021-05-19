@@ -42,9 +42,9 @@ let btnRequisit;
 let saveUFsButton;
 let radioCursTotal;
 let radioCursParcial;
+let ufCount = 1;
 
 // Variables Tab Dades:
-
 let btnValid =$("#validData");
 let btnInvalid =$("#invalidData");
 
@@ -135,8 +135,6 @@ async function onDeviceReady() {
     });
 
     await sleep(1000);
-    
-    console.log(skipWizard);
 
     // Animacion para quitar el blur inicial (SIEMPRE AL FINAL DE LA FUNCION onDeviceReady)
     $("#body").addClass("custom-blur-off");
@@ -224,14 +222,14 @@ function getRequisits(){
         setRequisits(xhr);
     }).fail(function() {
         console.error("Internal log - Error: no se han podido recuperar los requisitos del usuario");
-        addRequirement("DNI Anvers");
-        addRequirement("DNI Revers");
-        addRequirement("Sanit\u00E0ria");
-        //sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        addRequirement({NameRequisit: "DNI Anvers"});
+        addRequirement({NameRequisit: "DNI Revers"});
+        addRequirement({NameRequisit: "Sanit\u00E0ria"});
     });
 }
 
 function setRequisits(xhr) {
+    console.log(xhr);
     for (const key in xhr.Requirements) {
         if (Object.hasOwnProperty.call(xhr.Requirements, key)) {
             addRequirement(xhr.Requirements[key]);
@@ -266,7 +264,7 @@ function onSuccess(imageData) {
         processData: false,  // tell jQuery not to process the data
         contentType: false   // tell jQuery not to set contentType
     }).done(function(xhr) {
-        alert(xhr.ok)
+        
     }).error(function() {
         sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
         $("#loading").modal('close');
@@ -276,8 +274,7 @@ function onSuccess(imageData) {
 
 }
 
-function onFail(message) {
-    console.log(message);
+function onFail() {
     console.error("Internal log - Error: no se ha podido obtener el documento o imagen");
 }
 
@@ -333,31 +330,21 @@ function getUfs() {
             "Authorization": "Token " + localStorage.getItem("token")
         }
     }).done(function(xhr) {
-        console.log(xhr);
-        let ufCount = 1;
         $("#cicleName")[0].innerHTML = xhr.name;
 
         for (let m = 1; m <= Object.keys(xhr.modules).length; m++) {
             const module = xhr.modules[m];
-            console.log(module);
-
             addModule(module.code, module.name);
-
             
             for (let u = 1; u <= Object.keys(module.ufs).length; u++) {
                 const uf =  module.ufs[ufCount];
-                console.log(uf);
                 addUf(module.code, uf.code, uf.name);
                 ufCount += 1;
             }
             
-            
         }
-
-        
     }).fail(function() {
         console.error("Internal log - Error: no se han podido recuperar las UFs del servidor");
-        // sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
 
         // MOCKUP UFS - BORRAR <------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!
         addModule("MP01","MP1. Fonaments agronomics");
@@ -458,7 +445,6 @@ function getUserData(){
     }).fail(function() {
         setStatus(statusD, 2);
         console.error("Internal log - Error: no se han podido recuperar los datos personales");
-        //sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
     }).always(function() {
         
     });

@@ -12,9 +12,9 @@ let passwordField = document.getElementById("passwordField");
 let skipLogin = false;
 
 async function onDeviceReady() {
-
-    console.log("Prueba de Dani: " + localStorage.getItem("token"));
     if(localStorage.getItem("token")){
+        window.location.replace("index.html");
+
         $.ajax({
             method: "GET",
             url: urlAjax + "/api/verify",
@@ -24,17 +24,12 @@ async function onDeviceReady() {
                 // "Authorization": localStorage.getItem("token")
             })
         }).done(function(xhr) {
-            console.log(xhr);
-            alert(xhr);
             if(xhr == true) {
                 window.location.replace("index.html");
             }
-        }).fail(function(error) {
-            alert(JSON.stringify(error));
         });
     }
     
-
     await sleep(2000);
     
     loginButton.onclick = async function() {
@@ -88,7 +83,7 @@ async function ajaxLogin() {
             $("#loading").modal('close');
             login = false;
         }
-    }).error(function() {
+    }).fail(function() {
         sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
         $("#loading").modal('close');
         login = false;
