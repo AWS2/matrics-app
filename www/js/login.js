@@ -73,7 +73,11 @@ async function ajaxLogin() {
             localStorage.setItem("UID", xhr.UserId);
 
             if(xhr.BoolWizard == true){
-                localStorage.setItem("skipWizard", "true");
+                console.log(xhr);
+                console.log(xhr.BoolWizard);
+                localStorage.setItem("skipWizard", true);
+            } else {
+                localStorage.setItem("skipWizard", false);
             }
 
             login = true;
