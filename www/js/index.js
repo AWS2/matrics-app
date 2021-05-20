@@ -1,6 +1,6 @@
 (function($) {
     $(function() {
-        if (!skipWizard) {
+        if (!JSON.parse(localStorage.getItem("skipWizard"))) {
             // Inicio del wizard:
             $("#wizard").modal('open');
     
@@ -17,6 +17,9 @@ document.addEventListener('deviceready', onDeviceReady, false);
 // Variables generales:
 let body = document.getElementById("body");
 
+// Variables side nav:
+let logoutBtn;
+
 // Variables Tab Inici (Dashboard):
 let statusR = $("#statusR");   // Status Requeriments
 let statusU = $("#statusU");   // Status UFs
@@ -28,59 +31,113 @@ let hintPayment = $("#dashboardInfoPay");
 let hintRequisits = $("#dashboardInfoRequisits");
 
 // Variables Tab Requisits:
+let reqPhoto;
+let reqGallery;
+let reqFile;
+let selectedRequisit;
+
+let btnRequisit;
 
 // Variables Tab UFs:
-let saveUFsButton = $("#saveUFsButton");
+let saveUFsButton;
+let radioCursTotal;
+let radioCursParcial;
+let ufCount = 1;
 
 // Variables Tab Dades:
-let userData =JSON.parse('{"nombre":"dani","apellido1":"ronda","apellido2":"palasi","dni":"46465871K","birthplace":"Barcelona","birthday":"01/08/2000","address":"plz milagros consarnau sabate 15 4 3","city":"Hospitalet","postal_code":"54815","phone_number":"936558741","emergency_number":"98563221","tutor_1":"dani powenwne jhjdwcmokwd","tutor_2":"safiupbdvsapi dsaihadvsiunl"}');
-
-// Booleanos generales:
-let skipWizard = true;
+let btnValid =$("#validData");
+let btnInvalid =$("#invalidData");
 
 // Modal variables: 
 let modalBtn = $("#wizard-floating-btn");
+let modalDataBtn = $("#error-data-floating-btn");
 
 // Funcion inicial
-function onDeviceReady() {
-    // MOCKUP UFS - BORRAR <------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!
-    addModule("MP01","MP1. Fonaments agronomics");
-    addModule("MP02","MP2. Taller i equips de traccio");
-    addModule("MP03", "MP3. Infraestructures i instal.lacions agricoles");
-    addModule("MP04","MP4. Principis de sanitat vegetal");
-    addModule("MP05","MP5. Control fitosanitari");
-    addModule("MP06","MP6. Implantació de jardins i zones verdes");
+async function onDeviceReady() {
+    // Boton de Tancar Sessio en el SideNav
+    logoutBtn = $("#btnLogout").on("click", async function(){
+        localStorage.setItem("token", "");
+        $("#body").removeClass("custom-blur-off");
+        await sleep(600);
+        window.location.replace("login.html");
+    });
 
-    addUf("MP01", "UF1", "UF1. Clima i microclima");
-    addUf("MP01", "UF2", "UF2. Aigua, sol i fertilitzacio");
-    addUf("MP01", "UF3", "UF3. Topografia");
-    addUf("MP01", "UF4", "UF4. Botanica");
-    addUf("MP02", "UF1", "UF1. El taller");
-    addUf("MP02", "UF2", "UF2. Maneig i manteniment del tractor i maquines motrius");
-    addUf("MP03", "UF1", "UF1. Infraestructures agricoles");
-    addUf("MP03", "UF2", "UF2. Manteniment d'instal.lacions agricoles");
-    addUf("MP03", "UF3", "UF3. Instal.lacions de reg");
-    addUf("MP03", "UF4", "UF4. Sistemes de proteccio i produccio forcada");
-    addUf("MP04", "UF1", "UF1. Vegetacio espontania i agents abiotics");
-    addUf("MP04", "UF2", "UF2. Plagues");
-    addUf("MP04", "UF3", "UF3. Malalties");
-    addUf("MP04", "UF4", "UF4. Estat sanitari de les plantes");
-    addUf("MP04", "UF5", "UF5. Metodes de proteccio");
-    addUf("MP05", "UF1", "UF1. Productes quimics fitosanitaris");
-    addUf("MP05", "UF2", "UF2. Preparacio i aplicacio de productes quimics fitosanitaris");
-    addUf("MP05", "UF3", "UF3. Manipulacio i emmagatzematge de productes quimics fitosanitaris");
-    addUf("MP06", "UF1", "UF1. Replantejament i preparació per a la implantacio");
-    addUf("MP06", "UF2", "UF2. Instal.lació d'elements no vegetals");
+    // Realizar funcion para recoger las UFs del ciclo del usuario
+    getUfs();
 
-    // Control the expand icons on each Module in UFs Tab
+    // Realizar funcion para recoger los requisitos
+    getRequisits();
+
+    // Realizar funcion para recoger datos personales
+    getUserData(localStorage.getItem("token"));
+
+    // Controlar los iconos de los collapsibles
     checkExpandables();
 
-    //Load user data
-    getUserData();
+    // Botones de hacer foto, subir foto y subir archivo de los modals de la tab Requisits
+    reqPhoto = $("#reqPhoto").on("click", function() {
+        navigator.camera.getPicture(onSuccess, onFail, setOptions(1));
+    });
 
-    saveUFsButton.on('click', function() {
+    reqGallery = $("#reqGallery").on("click", function() {
+        navigator.camera.getPicture(onSuccess, onFail, setOptions(0));
+    });
+
+    reqFile = $("#reqFile").on("click", function() {
+        customFileChooser.open('application/pdf',function (uri) {
+            alert(uri);
+            const file = new File(uri);
+            alert(file);
+            // Do something with that file, probably an ajax
+        }, function(err){
+            sendErrorToast("No s'ha pogut carregar l'arxiu.")
+        });
+    });
+
+    // Radio buttons de Curso total y Curso parcial de la tab UFs
+    radioCursTotal = $("#radioCursTotal").on("click", function() {
+        if ($("#radioCursTotal").prop("checked")) {
+            checkAllCheckboxes();
+            disableAllCheckboxes();
+        }
+    });
+
+    radioCursParcial = $("#radioCursParcial").on("click", function() {
+        if ($("#radioCursParcial").prop("checked")) {
+            uncheckAllCheckboxes();
+            enableAllCheckboxes();
+        }
+    });
+
+    // Boton para guardar UFs en la tab UF
+    saveUFsButton = $("#saveUFsButton").on('click', function() {
         setUfs();
     });
+
+    // Botones de validar o no validar los datos personales de la tab Dades
+    btnValid.on('click', function() {
+        setStatus(statusD, 0);
+        hintMenuControl();
+        sendToast("Dades personals validades correctament.");
+        applyDisabledClass("validData");
+    });
+
+    btnInvalid.on('click', function() {
+        setStatus(statusD, 1);
+        hintMenuControl();
+        $("#wrongDataModal").modal('open');
+        removeDisabledClass("validData");
+    });
+
+    // Boton de OK del modal de la tab Dades
+    modalDataBtn.on( "click", function() {
+       $("#wrongDataModal").modal('close');
+    });
+
+    await sleep(1000);
+
+    // Animacion para quitar el blur inicial (SIEMPRE AL FINAL DE LA FUNCION onDeviceReady)
+    $("#body").addClass("custom-blur-off");
 }
 
 // Funciones Tab Inici (Dashboard):
@@ -91,68 +148,137 @@ function setStatus(type, status) {
         type.removeClass("grey-text");
         type.removeClass("text-lightn-1");
         type.addClass("green-text");
+        type.attr("name", 0);
     } else if (status == 1) {
         type.removeClass("green-text");
         type.removeClass("red-text");
         type.removeClass("grey-text");
         type.removeClass("text-lightn-1");
         type.addClass("orange-text");
+        type.attr("name", 1);
     } else if (status == 2) {
         type.removeClass("orange-text");
         type.removeClass("red-text");
         type.removeClass("grey-text");
         type.removeClass("text-lightn-1");
         type.addClass("red-text");
+        type.attr("name", 2);
     }
 }
 
 function hintMenuControl() {
-    switch (statusR) {
-        case 0:
+    switch (statusR.attr("name")) {
+        case "0":
             
             break;
-        case 1:
+        case "1":
         
             break;
-        case 2:
+        case "2":
     
-            break;
-        default:
             break;
     }
 
-    switch (statusU) {
-        case 0:
+    switch (statusU.attr("name")) {
+        case "0":
             
             break;
-        case 1:
+        case "1":
         
-            break;
-        case 2:
-    
-            break;
-        default:
-            break;
-    }
-    
-    switch (statusD) {
-        case 0:
-            
-            break;
-        case 1:
-        
-            break;
-        case 2:
-    
-            break;
-        default:
             break;
     }
 
+    switch (statusD.attr("name")) {
+        case "0":
+            $("#dashboardInfoDades").addClass("custom-display-none");
+            break;
+        case "1":
+            $("#dashboardInfoDades").removeClass("custom-display-none");
+            break;
+    }
 }
 
 // Funciones Tab Requisits:
+function addRequirement(name) {
+    $("#reqBody").append('<tr class="valign-wrapper"><th class="custom-padding-left-1em" style="white-space: break-spaces; overflow-wrap: anywhere;">' + name + '</th><td class="valign-wrapper" style="margin-left: auto;"><a id="btnRequisit" name="reqBtn" class="waves-effect waves-light custom-border-radius custom-margin-top-bottom-05em blue-gradient btn">AFEGEIX!</a><i id="statusReq' + name + '" class="material-icons custom-margin-05em circle grey-text text-lighten-1">brightness_1</i></td></tr>');
+    $("[name=reqBtn]").each(function() {
+        $(this).prop("onclick", null).off("click");
+        $(this).on("click", function() {
+            selectedRequisit = name;
+            $("#reqUpload").modal('open');
+        });
+    });
+}
 
+function getRequisits(){
+    $.ajax({
+        method: "GET",
+        url: urlAjax + "/api/profileandrequirements",
+        dataType: "json",
+        headers: ({
+            "Authorization": "Token " + localStorage.getItem("token")
+        })
+    }).done(function(xhr) {
+        console.log(xhr);
+        setRequisits(xhr.Requirements);
+        
+    }).fail(function() {
+        console.error("Internal log - Error: no se han podido recuperar los requisitos del usuario");
+        addRequirement("DNI Anvers");
+        addRequirement("DNI Revers");
+        addRequirement("Sanit\u00E0ria");
+    });
+}
+
+function setRequisits(xhr) {
+    console.log(xhr);
+    for (const key in xhr) {
+        if (Object.hasOwnProperty.call(xhr, key)) {
+            addRequirement(xhr[key]);
+        }
+    }
+}
+
+function setOptions(srcType) {
+    return {
+        quality: 100,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: srcType,
+        encodingType: Camera.EncodingType.JPEG,
+        mediaType: Camera.MediaType.PICTURE,
+        correctOrientation: true,
+    }
+    
+}
+
+function onSuccess(imageData) {
+    var image = "data:image/jpeg;base64," + imageData;
+    console.log(image);
+
+    var formData = new FormData;
+    formData.append("file", image);
+    formData.append("id", selectedRequisit)
+
+    $.ajax({
+        url: "http://api-matrics-test.ieti.cat:8000/api/token",
+        type: "POST",
+        data: formData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false   // tell jQuery not to set contentType
+    }).done(function(xhr) {
+        
+    }).error(function() {
+        sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        $("#loading").modal('close');
+    }).always(function() {
+        $("#loading").modal('close');
+    });
+
+}
+
+function onFail() {
+    console.error("Internal log - Error: no se ha podido obtener el documento o imagen");
+}
 
 // Funciones Tab UFs:
 
@@ -197,38 +323,74 @@ function checkSelectionListenersUFs() {
     });
 }
 
-function getAllSelected() {
-    $("[name=UF]:checked");
-}
-
-function getUfs(url, query, dataType) {
-    $("#listaModulos").html("");
+function getUfs() {
     $.ajax({
         method: "GET",
-        url: url + query,
-        datatype: String,
-        data: ({
-          token: token
-        })
+        url: urlAjax + "/api/career",
+        datatype: "application/json",
+        headers: {
+            "Authorization": "Token " + localStorage.getItem("token")
+        }
     }).done(function(xhr) {
-        console.log(xhr.status);
-        
+        $("#cicleName")[0].innerHTML = xhr.name;
+
+        for (let m = 1; m <= Object.keys(xhr.modules).length; m++) {
+            const module = xhr.modules[m];
+            addModule(module.code, module.name);
+            
+            for (let u = 1; u <= Object.keys(module.ufs).length; u++) {
+                const uf =  module.ufs[ufCount];
+                addUf(module.code, uf.code, uf.name);
+                ufCount += 1;
+            }
+            
+        }
     }).fail(function() {
-        sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        console.error("Internal log - Error: no se han podido recuperar las UFs del servidor");
+
+        // MOCKUP UFS - BORRAR <------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!
+        addModule("MP01","MP1. Fonaments agronomics");
+        addModule("MP02","MP2. Taller i equips de traccio");
+        addModule("MP03", "MP3. Infraestructures i instal.lacions agricoles");
+        addModule("MP04","MP4. Principis de sanitat vegetal");
+        addModule("MP05","MP5. Control fitosanitari");
+        addModule("MP06","MP6. Implantació de jardins i zones verdes");
+
+        addUf("MP01", "UF1", "UF1. Clima i microclima");
+        addUf("MP01", "UF2", "UF2. Aigua, sol i fertilitzacio");
+        addUf("MP01", "UF3", "UF3. Topografia");
+        addUf("MP01", "UF4", "UF4. Botanica");
+        addUf("MP02", "UF1", "UF1. El taller");
+        addUf("MP02", "UF2", "UF2. Maneig i manteniment del tractor i maquines motrius");
+        addUf("MP03", "UF1", "UF1. Infraestructures agricoles");
+        addUf("MP03", "UF2", "UF2. Manteniment d'instal.lacions agricoles");
+        addUf("MP03", "UF3", "UF3. Instal.lacions de reg");
+        addUf("MP03", "UF4", "UF4. Sistemes de proteccio i produccio forcada");
+        addUf("MP04", "UF1", "UF1. Vegetacio espontania i agents abiotics");
+        addUf("MP04", "UF2", "UF2. Plagues");
+        addUf("MP04", "UF3", "UF3. Malalties");
+        addUf("MP04", "UF4", "UF4. Estat sanitari de les plantes");
+        addUf("MP04", "UF5", "UF5. Metodes de proteccio");
+        addUf("MP05", "UF1", "UF1. Productes quimics fitosanitaris");
+        addUf("MP05", "UF2", "UF2. Preparacio i aplicacio de productes quimics fitosanitaris");
+        addUf("MP05", "UF3", "UF3. Manipulacio i emmagatzematge de productes quimics fitosanitaris");
+        addUf("MP06", "UF1", "UF1. Replantejament i preparació per a la implantacio");
+        addUf("MP06", "UF2", "UF2. Instal.lació d'elements no vegetals");
     }).always(function() {
-        
+        // Simular un click en el radio button de curso total
+        $("#radioCursTotal").click();
     });
 }
 
 // funcion a la que llamar cuando se pulse el boton de guardar y que mandara las UFs seleccionadas a la base
-function setUfs(url, query, token){
+function setUfs(){
     $.ajax({
         method: "POST",
-        url: url + query,
+        url: urlAjax + "/api/savecareer",
         datatype: String,
-        data: ({
-          token: token === undefined ? "" : token
-        })
+        headers: {
+            "Authorization": "Token " + localStorage.getItem("token")
+        }
     }).done(function(xhr) {
         console.log(xhr.status);
         
@@ -237,7 +399,8 @@ function setUfs(url, query, token){
     }).fail(function() {
         // Cambiar el estado del las UFs a 2 (Rojo)
         setStatus(statusU, 2);
-        sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        console.error("Internal log - Error: no se han podido guardar las UFs del servidor");
+        sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
     }).always(function() {
         
     });
@@ -256,23 +419,61 @@ function addUf(idModule, idUf, ufName) {
 
 // Funciones Tab Dades:
 function getUserData(){
-    $("#dadesNombre")[0].innerHTML=userData.nombre;
-    $("#dadesApellidos")[0].innerHTML=userData.apellido1;
-    $("#dadesDNI")[0].innerHTML=userData.dni;
-    $("#dadesLlocNaixement")[0].innerHTML=userData.birthplace;
-    $("#dadesNaixement")[0].innerHTML=userData.birthday;
-    $("#dadesDireccio")[0].innerHTML=userData.address;
-    $("#dadesCiutat")[0].innerHTML=userData.city;
-    $("#dadesCodiPostal")[0].innerHTML=userData.postal_code;
-    $("#dadesTelefon")[0].innerHTML=userData.phone_number;
-    $("#dadesTelefonEmergencia")[0].innerHTML=userData.emergency_number;
-    $("#dadesTutor1")[0].innerHTML=userData.tutor_1;
-    $("#dadesTutor2")[0].innerHTML=userData.tutor_2;
+    $.ajax({
+        method: "GET",
+        url: urlAjax + "/api/user",
+        datatype: String,
+        headers: {
+            "Authorization": "Token " + localStorage.getItem("token")
+        }
+    }).done(function(userData) {
+        $("#dadesNom")[0].innerHTML=userData.first_name ? userData.first_name : "-";
+        $("#dadesCognoms")[0].innerHTML=userData.last_name ? userData.last_name : "-";
+        $("#dadesDNI")[0].innerHTML=userData.dni ? userData.dni : "-";
+        $("#dadesLlocNaixement")[0].innerHTML=userData.birthplace ? userData.birthplace : "-";
+        $("#dadesNaixement")[0].innerHTML=userData.birthday ? userData.birthday : "-";
+        $("#dadesDireccio")[0].innerHTML=userData.address ? userData.address : "-";
+        $("#dadesCiutat")[0].innerHTML=userData.city ? userData.city : "-";
+        $("#dadesCodiPostal")[0].innerHTML=userData.postal_code ? userData.postal_code : "-";
+        $("#dadesTelefon")[0].innerHTML=userData.phone_number ? userData.phone_number : "-";
+        $("#dadesTelefonEmergencia")[0].innerHTML=userData.emergency_number ? userData.emergency_number : "-";
+        $("#dadesTutor1")[0].innerHTML=userData.tutor_1 ? userData.tutor_1 : "-";
+        $("#dadesTutor2")[0].innerHTML=userData.tutor_2 ? userData.tutor_2 : "-";
+
+        // Side nav info
+        $("#sideNavUsername")[0].innerHTML = (userData.first_name ? userData.first_name : "-") + " " + (userData.last_name ? userData.last_name : "-");
+        $("#sideNavEmail")[0].innerHTML = userData.email ? userData.email : "-";
+        setStatus(statusD, 1);
+    }).fail(function() {
+        setStatus(statusD, 2);
+        console.error("Internal log - Error: no se han podido recuperar los datos personales");
+    }).always(function() {
+        
+    });
 }
 
 // Funciones generales:
-function sendToast(content) {
+function sendErrorToast(content) {
     M.toast({html: content, displayLength: 3000, classes: 'rounded red-gradient'});
+}
+function sendToast(content) {
+    M.toast({html: content, displayLength: 3000, classes: 'rounded blue-gradient'});
+}
+
+function checkAllCheckboxes() {
+    $("[name=UF],[name=MP]").prop("checked", true);
+}
+
+function uncheckAllCheckboxes() {
+    $("[name=UF],[name=MP]").prop("checked", false);
+}
+
+function disableAllCheckboxes() {
+    $("[name=UF],[name=MP]").attr("disabled", true);
+}
+
+function enableAllCheckboxes() {
+    $("[name=UF],[name=MP]").attr("disabled", false);
 }
 
 function applyPulseEffect(id) {
@@ -313,3 +514,4 @@ function checkExpandables() {
         });
     });
 }
+

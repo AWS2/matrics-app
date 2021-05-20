@@ -8,54 +8,101 @@ let googleSL = document.getElementById("googleSL");
 let emailField = document.getElementById("emailField");
 let passwordField = document.getElementById("passwordField");
 
-// User Token
-let userToken = "";
-
 // Testing
 let skipLogin = false;
 
-function onDeviceReady() {
-    loginButton.onclick = function() {
+async function onDeviceReady() {
+    if(localStorage.getItem("token")){
+        window.location.replace("index.html");
+
+        $.ajax({
+            method: "GET",
+            url: urlAjax + "/api/verify",
+            dataType: "json",
+            headers: ({
+                "UID": localStorage.getItem("UID"),
+                // "Authorization": localStorage.getItem("token")
+            })
+        }).done(function(xhr) {
+            if(xhr == true) {
+                window.location.replace("index.html");
+            }
+        });
+    }
+    
+    await sleep(2000);
+    
+    loginButton.onclick = async function() {
         if (skipLogin) {
-                window.location.href = "index.html";
-        } else {
+            $("#body").addClass("custom-blur-on");
+            window.location.replace("index.html");
+        }else {
             if (validateFieldsLogin()) {
                 $("#loading").modal('open');
-                ajaxLogin("/api/token");
+                await sleep(500);
+                ajaxLogin();
             } else {
-                sendToast("Els camps Email i Contrasenya no poden estar buits.");
+                sendErrorToast("Els camps Email i Contrasenya no poden estar buits.");
             }
         }
     }
+
+    // Animacion para quitar el blur inicial (SIEMPRE AL FINAL DE LA FUNCION onDeviceReady)
+    $("#body").addClass("custom-blur-off");
 } 
 
 function validateFieldsLogin() {
     return (!emailField.value || emailField.value.trim() === "" || !passwordField.value || passwordField.value.trim() === "") ? false : true;
 }
 
-function ajaxGetLogin(query) {
+async function ajaxLogin() {
+    let login = false;
     var formData = new FormData;
     formData.append("email", emailField.value);
-    formData.append("password", CryptoJS.SHA256(passwordField.value).toString());
+    formData.append("password", passwordField.value);
 
-    $.ajax({
-        url: "http://18.234.231.223:8000",
+    await $.ajax({
+        url: urlAjax + "/api/token",
         type: "POST",
         data: formData,
         processData: false,  // tell jQuery not to process the data
         contentType: false   // tell jQuery not to set contentType
     }).done(function(xhr) {
-        console.log(xhr);
-        window.location.href = "index.html";
-    }).error(function() {
-        sendToast("Usuari o contrasenya err" + "\u00F2" + "nia...");
+        if (xhr.Token) {
+            localStorage.setItem("token",xhr.Token);
+            localStorage.setItem("UID", xhr.UserId);
+
+            if(xhr.BoolWizard == true){
+                console.log(xhr);
+                console.log(xhr.BoolWizard);
+                localStorage.setItem("skipWizard", true);
+            } else {
+                localStorage.setItem("skipWizard", false);
+            }
+
+            login = true;
+
+        }else{
+            sendErrorToast("L\'email o la contrasenya no s\u00F3n correctes.");
+            $("#loading").modal('close');
+            login = false;
+        }
+    }).fail(function() {
+        sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
         $("#loading").modal('close');
+        login = false;
     }).always(function() {
-        $("#loading").modal('close');
+        
     });
+
+    if (login) {
+        $("#body").removeClass("custom-blur-off");
+        await sleep(500);
+        window.location.replace("index.html");
+    }
 }
 
-function sendToast(content) {
+function sendErrorToast(content) {
     M.toast({html: content, displayLength: 3000, classes: 'rounded red-gradient'});
 }
   

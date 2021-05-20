@@ -4,12 +4,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, viewport-fit=cover" />
-	<title>MatriculaT Login</title>
+	<title>Matrics IETI</title>
 
 	<!-- cordova-headers -->
 	<meta http-equiv="Content-Security-Policy"
-		content="default-src https://sis-t.redsys.es:25443/sis https://accounts.google.com https://apis.google.com/js/platform.js https://apis.google.com https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js https://fonts.gstatic.com 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src https://fonts.googleapis.com 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+		content="default-src http://3.220.37.220:8000 https://matrics-test.ieti.cat https://sis-t.redsys.es:25443/sis https://accounts.google.com https://apis.google.com/js/platform.js https://apis.google.com https://code.jquery.com/ https://fonts.gstatic.com 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src https://fonts.googleapis.com 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
 	<meta name="format-detection" content="telephone=no">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
 	<meta name="msapplication-tap-highlight" content="no">
 
 	<!-- CSS  -->
@@ -18,10 +19,32 @@
 	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 
-<body id="body">
-	<nav id="navbar" class="nav-extended blue custom-border-radius-bottom custom-width-100 custom-margin-auto"
-		role="navigation">
-		<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center blue-text-gradient">Matrics IETI</a></div>
+<body id="body" class="custom-blur-on">
+	<nav id="navbar" class="nav-extended blue custom-border-radius-bottom custom-width-100 custom-margin-auto" role="navigation">
+		<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center blue-text-gradient">Matrics IETI</a> 
+			<ul id="slide-out" class="sidenav custom-overflow-y-hidden custom-max-height-100">
+				<li><div class="user-view" style="box-shadow: 0px 0px 10px 0px #2196F3;">
+					<div class="background">
+						<img src="img/Misc/sideNavBackgroundV2.jpg">
+					</div>
+					<a><img class="circle" src="img/Misc/userIcon.png"></a>
+					<a><span class="white-text name"><h6 id="sideNavUsername">--</h6></span></a>
+					<a><span id="sideNavEmail" class="white-text email">--</span></a>
+				  </div></li>
+				<li><a class="dropdown-trigger" href="#!" data-target="dropdownTheme">Tema<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i></a></li>
+				<ul id='dropdownTheme' class='dropdown-content'>
+					<li><a href="#!">Tema clar</a></li>
+					<li><a href="#!">Tema fosc</a></li>
+				  	<li><a href="#!">Tema del sistema</a></li>
+				</ul>
+				<li><a href="#!">Ajuda</a></li>
+				<li><a id="btnLogout" href="#!">Tancar sessi&oacute;</a></li>
+			</ul>
+			<ul id="side-nav-user" class="right hide-on-med-and-down">
+				<!-- Nothing to display on the desktop version of SideNav-->
+			</ul>
+			<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+		</div>
 		<div class="nav-content">
 			<ul class="tabs blue tabs-fixed-width blue-gradient-180">
 				<li class="tab"><a class="waves-effect waves-light custom-border-radius blue-text-gradient2 custom-wrap" href="#dashboardTab">Inici</a></li>
@@ -30,17 +53,18 @@
 				<li class="tab"><a class="waves-effect waves-light custom-border-radius blue-text-gradient2 custom-wrap" href="#dadesTab">Dades</a></li>
 			</ul>
 		</div>
+		
 	</nav>
 
 	<!-- Tab Inici -->
-	<div id="dashboardTab" class="container custom-padding-top-1em custom-width-80">
+	<div id="dashboardTab" class="container custom-width-80">
 		<h5 class="custom-margin-top-bottom-1em">Estat de matriculaci&#243;:</h5>
 		<ul class="collapsible custom-border-radius custom-scroll-y">
 			<li>
 				<div class="collapsible-header ">
 					<i id="expandable" name="dashboardTab" class="material-icons circle blue-text-gradient-modal" style="margin-left: 0px;margin-right: 0.5em;text-align: center;">expand_more</i>
 					Requeriments
-					<i id="statusR"class="material-icons circle grey-text text-lighten-1">brightness_1</i>
+					<i id="statusR" name="0" class="material-icons circle grey-text text-lighten-1">brightness_1</i>
 				</div>
 				<div class="collapsible-body">
 					<p class="custom-margin-top-05em-negative">
@@ -53,7 +77,7 @@
 					</p>
 					<p class="custom-margin-bottom-05em-negative">
 						<i class="material-icons circle green-text tiny">brightness_1</i>&ThickSpace; 
-						Verd si els documents s'han validat correctament des de secret&agrave;ria.
+						Verd si els documents s'han validat correctament des de secretaria.
 					</p>
 				</div>
 			</li>
@@ -61,7 +85,7 @@
 				<div class="collapsible-header ">
 					<i id="expandable" name="dashboardTab" class="material-icons circle blue-text-gradient-modal" style="margin-left: 0px;margin-right: 0.5em;text-align: center;">expand_more</i>
 					UFs a matricular
-					<i id="statusU" class="material-icons circle grey-text text-lighten-1">brightness_1</i>
+					<i id="statusU" name="0" class="material-icons circle grey-text text-lighten-1">brightness_1</i>
 				</div>
 				<div class="collapsible-body">
 					<p class="custom-margin-top-05em-negative">
@@ -82,12 +106,12 @@
 				<div class="collapsible-header ">
 					<i id="expandable" name="dashboardTab" class="material-icons circle blue-text-gradient-modal" style="margin-left: 0px;margin-right: 0.5em;text-align: center;">expand_more</i>
 					Dades personals
-					<i id="statusD" class="material-icons circle grey-text text-lighten-1">brightness_1</i>
+					<i id="statusD" name="0" class="material-icons circle grey-text text-lighten-1">brightness_1</i>
 				</div>
 				<div class="collapsible-body">
 					<p class="custom-margin-top-05em-negative">
 						<i class="material-icons circle red-text tiny">brightness_1</i>&ThickSpace; 
-						Vermell si les dades que has visualitzat contenen algun error.
+						Vermell si les teves dades personals no s'han pogut carregar correctament.
 					</p>
 					<p>
 						<i class="material-icons circle orange-text tiny">brightness_1</i>&ThickSpace; 
@@ -105,7 +129,7 @@
 		<blockquote class="custom-scroll-y">
 			<h5 id="titleHint" class="custom-h5">Tasques a fer:</h5>
 			<span id="contentHint">
-				<p id="dashboardInfoDades" step="0">
+				<p id="dashboardInfoDades">
 					- Validar les teves dades personals. <!-- Per fer-ho comprova que tot sigui correcte a la pestanya <em>Dades</em>. -->
 				</p>
 				<p id="dashboardInfoUFs" step="0">
@@ -123,55 +147,58 @@
 
 	<!-- Tab Requisits -->
 	<div id="reqTab" class="container custom-padding-top-1em custom-width-80">
-		<div id="paneProfile" class="container">
-			<h4 id="userProfile">#PERFIL</h4>
+		<div id="reqList" class="custom-margin-top-1em custom-border custom-border-radius custom-scroll-y" style="max-height: 75vh;">
+			<table>
+				<tbody id="reqBody"></tbody>
+			</table>
 		</div>
 
-		<div id="paneRequisits" class="container right-align">
-
-		</div>
-
-		<div id="reqModal" class="modal bottom-sheet">
-			<div class="modal-content">
-				<h4>MatriculaT</h4>
-				<div id="reqModalGallery" style="display:flex; flex-direction:row;">
-					<i class="material-icons circle blue-text custom-icon-padding">camera_alt</i>
-					<p>Fer una fotgrafia</p>
+		<!-- Requirement Upload Modal -->
+	<div id="reqUpload" class="modal bottom-sheet">
+		<div class="modal-content custom-padding-1em">
+			<div class="container">
+				<h6>Selecciona un m&eacute;tode per carregar un document</h6>
+				<div class="custom-padding-top-1em" style="display:flex; flex-direction:row;">
+					<a id="reqPhoto" style="border-radius: 20px; width: 100%;" class="waves-effect waves-light btn-large blue-gradient"><i class="material-icons left">camera_alt</i>FES-HI UNA FOTO!</a>
 				</div>
-				<div id="reqModalGallery" style="display:flex; flex-direction:row;">
-					<i class="material-icons circle blue-text custom-icon-padding">image</i>
-					<p>Pujar una imatge</p>
+				<div class="custom-padding-top-1em" style="display:flex; flex-direction:row;">
+					<a id="reqGallery" style="border-radius: 20px; width: 100%;" class="waves-effect waves-light btn-large blue-gradient"><i class="material-icons left">photo</i>PUJA UNA FOTO!</a>
 				</div>
-				<div id="reqModalGallery" style="display:flex; flex-direction:row;">
-					<i class="material-icons circle blue-text custom-icon-padding">file_upload</i>
-					<p>Pujar un fitxer</p>
+				<div class="custom-padding-top-1em" style="display:flex; flex-direction:row;">
+					<a id="reqFile" style="border-radius: 20px; width: 100%;" class="waves-effect waves-light btn-large blue-gradient"><i class="material-icons left">file_upload</i>PUJA UN FITXER!</a>
 				</div>
 			</div>
-			<div class="modal-footer">
-				<a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-			</div>
 		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close waves-effect waves-blue custom-border-radius btn-flat">Cancel&middot;lar</a>
+		</div>
+	</div>
+		
 	</div>
 
 	<!-- Tab UFs -->
 	<div id="ufTab" class="container custom-width-80">
-		<h5 class="center-align">Jardineria i floristeria</h5>
-		<a id="saveUFsButton" class="waves-effect waves-light custom-display-block custom-width-75 custom-margin-auto custom-margin-top-bottom-1-5em blue-gradient btn-large custom-border-radius center-align">Guardar</a>
-		<ul id="ufList" class="collapsible custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-35vh">
-			<!-- TEMP DATA - This ul should be empty on PRO -->
-			<!-- <li> 
-					<div class="collapsible-header valign-wrapper">
-						<label style="margin-left: 0.5em; max-width: 95%; white-space: break-spaces;"><input type="checkbox"/><span></span></label><label style="margin-left: 0.5em; max-width: 95%; white-space: break-spaces; font-size: 1em"><span>M01 Formacion en centros de trabajo XD</span></label>
-						<i id="expandable" class="material-icons circle blue-text-gradient-modal">expand_more</i>
-					</div> 
-					<div id="modul-i" class="collapsible-body custom-padding-0"> 
-						<p>
-							<label style="margin-left: 2.5em; max-width: 95%; white-space: break-spaces; display: block;"><input id="chk_modul-+i+" type="checkbox"/><span>UF01 esto tiene un nombre largisimo XDDD</span></label> 
-						</p>
-					</div>
-				</li> -->
-			<!-- TEMP DATA - This ul should be empty on PRO -->
-		</ul>
+		<h5 id="cicleName" class="center-align">Jardineria i floristeria</h5>
+		<div class="row valign-wrapper custom-margin-bottom-0">
+			<div class="col s6">
+				<a id="saveUFsButton" class="waves-effect waves-light custom-display-block custom-margin-auto custom-margin-top-bottom-1-5em blue-gradient btn custom-border-radius center-align">Guardar</a>
+			</div>
+			<div class="col s6">
+				<p>
+					<label>
+						<input id="radioCursTotal" name="typeCourse" type="radio" checked/>
+						<span>Curs total</span>
+					</label>
+					<br/>
+					<label>
+						<input id="radioCursParcial" name="typeCourse" type="radio" />
+						<span>Curs parcial</span>
+					</label>
+				</p>
+			</div>
+		</div>
+		
+		<ul id="ufList" class="collapsible custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-30vh"></ul>
 
 		<div class="divider custom-margin-1em"></div>
 
@@ -180,11 +207,11 @@
 				<tbody>
 					<tr>
 						<td class="custom-padding-left-1em">Descompte:</td>
-						<td class="right-align custom-padding-right-1em">40,25€</td>
+						<td id="paymentDiscount" class="right-align custom-padding-right-1em">180€</td>
 					</tr>
 					<tr>
 						<td class="custom-padding-left-1em">Preu total:</td>
-						<td class="right-align custom-padding-right-1em">200€</td>
+						<td id="paymentPrice" class="right-align custom-padding-right-1em">246,12€</td>
 					</tr>
 				</tbody>
 			</table>
@@ -194,23 +221,23 @@
 			<input type="hidden" name="Ds_SignatureVersion" value="HMAC_SHA256_V1"/>
 			<input type="hidden" name="Ds_MerchantParameters"/>
 			<input type="hidden" name="Ds_Signature"/>
-			<input type="hidden" id="tfAmount" value="200"><br/>
-			<input type="submit" value="M&egrave;todes de pagament" class="custom-border-radius btn-large blue"/>
+			<input type="hidden" id="tfAmount" value="246,12"><br/>
+			<input type="submit" value="M&egrave;todes de pagament" class="custom-border-radius btn-large blue custom-margin-bottom-1em"/>
 		</form>
 	</div>
 
 	<!-- Tab Dades -->
 	<div id="dadesTab" class="container custom-padding-top-1em custom-width-80">
-		<div class="custom-border custom-border-radius custom-scroll-y">
-			<table >
+		<div class="custom-margin-top-1em custom-border custom-border-radius custom-scroll-y" style="max-height: 65vh;">
+			<table>
 				<tbody>
 					<tr>
-						<th class="custom-padding-left-1em">Nombre</th>
-						<td id="dadesNombre" style="white-space: break-spaces; overflow-wrap: anywhere;">---</td>
+						<th class="custom-padding-left-1em">Nom</th>
+						<td id="dadesNom" style="white-space: break-spaces; overflow-wrap: anywhere;">---</td>
 					</tr>
 					<tr>
-						<th class="custom-padding-left-1em">Apellidos</th>
-						<td id="dadesApellidos" style="white-space: break-spaces; overflow-wrap: anywhere;">---</td>
+						<th class="custom-padding-left-1em">Cognoms</th>
+						<td id="dadesCognoms" style="white-space: break-spaces; overflow-wrap: anywhere;">---</td>
 					</tr>
 					<tr>
 						<th class="custom-padding-left-1em">Document d'identificaci&oacute;</th>
@@ -255,6 +282,12 @@
 				</tbody>
 			</table>
 		</div>
+		<div>
+			<p class="valign-wrapper" style="display: flex;justify-content: space-between;">
+				<a id="validData" class="waves-effect waves-blue custom-border custom-border-radius custom-padding-1em valign-wrapper center-align" style="white-space: break-spaces; flex-basis: 100%;">Dades v&agrave;lides</a> &ThickSpace;
+				<a id="invalidData" class="waves-effect waves-blue custom-border custom-border-radius custom-padding-1em valign-wrapper center-align" style="white-space: break-spaces; flex-basis: 100%;">Dades no v&agrave;lides</a>
+			</p>
+		</div>
 	</div>
 
 	<!-- Wizard Modal -->
@@ -267,33 +300,51 @@
 			<!--  Inici -->
 			<div id="modal-content-container" class="container custom-padding-1em">
 				<h4>Benvingut a <br /><span class="blue-text-gradient-modal">Matrics IETI</span></h4>
-				<p>Aquesta aplicació et permetr&agrave; matricular-te al cicle formatiu que t'hagis preinscrit de forma
-					r&agrave;pida i senzilla.</p>
-				<p>Per comen&ccedil;ar, et farem un parell de preguntes per determinar el teu perfil,
-					prefer&egrave;ncies i requisits de la matricula.</p>
+				<p>Aquesta aplicació et permetr&agrave; matricular-te al cicle formatiu que t'hagis preinscrit de formar&agrave;pida i senzilla.</p>
+				<p>Per comen&ccedil;ar, et farem un parell de preguntes per determinar el teu perfil, prefer&egrave;ncies i requisits de la matricula.</p>
 				<p>Prem el bot&oacute; amb la fletxa a la part inferior dreta de la pantalla per continuar.</p>
 			</div>
 
 
 		</div>
 		<div class="fixed-action-btn">
-			<a id="wizard-floating-btn"
-				class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
+			<a id="wizard-floating-btn" class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
 				<i class="large material-icons">arrow_forward</i>
+			</a>
+		</div>
+	</div>
+	
+	<!-- Wrong User Details Modal -->
+	<div id="wrongDataModal" class="modal">
+		<div class="modal-content">
+		
+			<!--  Inici -->
+			<div id="modal-content-container" class="container custom-padding-1em">
+				<h4>Error a les dades d'usuari</h4>
+				<p>Si est&agrave;s a aquesta finestra vol dir que has trobat algun error a una o varies dades personals.</p>
+				<p>Per corretgir aquesta errada escriu un correu a <span class="blue-text-gradient-modal">correusecretaria@xtec.cat</span> amb el teu nom
+					 i cognoms y les dades que no son correctes, amb les seves respectives correccions.</p>
+				<p>Una vegada fet aix&oacute; revisa en uns dies la aplicaci&oacute; per comprovar si les dades s'han modificat.</p>
+			</div>
+
+
+		</div>
+		<div class="fixed-action-btn">
+			<a id="error-data-floating-btn" class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
+				OK
 			</a>
 		</div>
 	</div>
 
 	<!--  Scripts-->
 	<script src="cordova.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	<script src="js/materialize.min.js"></script>
 	<script src="js/crypto-js.js"></script>
 	<script src="js/init.js"></script>
 	<script src="js/pagos.js"></script>
 	<script src="js/wizard.js"></script>
 	<script src="js/index.js"></script>
-	<script src="js/fitxersController.js"></script>
 </body>
 
 </html>
