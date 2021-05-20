@@ -1,6 +1,6 @@
 (function($) {
     $(function() {
-        if (!localStorage.getItem("skipWizard")) {
+        if (!JSON.parse(localStorage.getItem("skipWizard"))) {
             // Inicio del wizard:
             $("#wizard").modal('open');
     
@@ -199,12 +199,12 @@ function hintMenuControl() {
 }
 
 // Funciones Tab Requisits:
-function addRequirement(reqJSON) {
-    $("#reqBody").append('<tr class="valign-wrapper"><th class="custom-padding-left-1em" style="white-space: break-spaces; overflow-wrap: anywhere;">' + reqJSON.NameRequisit + '</th><td class="valign-wrapper" style="margin-left: auto;"><a id="btnRequisit" name="reqBtn" class="waves-effect waves-light custom-border-radius custom-margin-top-bottom-05em blue-gradient btn">AFEGEIX!</a><i id="statusReq' + reqJSON.NameRequisit + '" class="material-icons custom-margin-05em circle grey-text text-lighten-1">brightness_1</i></td></tr>');
+function addRequirement(name) {
+    $("#reqBody").append('<tr class="valign-wrapper"><th class="custom-padding-left-1em" style="white-space: break-spaces; overflow-wrap: anywhere;">' + name + '</th><td class="valign-wrapper" style="margin-left: auto;"><a id="btnRequisit" name="reqBtn" class="waves-effect waves-light custom-border-radius custom-margin-top-bottom-05em blue-gradient btn">AFEGEIX!</a><i id="statusReq' + name + '" class="material-icons custom-margin-05em circle grey-text text-lighten-1">brightness_1</i></td></tr>');
     $("[name=reqBtn]").each(function() {
         $(this).prop("onclick", null).off("click");
         $(this).on("click", function() {
-            selectedRequisit = reqJSON.idRequisit;
+            selectedRequisit = name;
             $("#reqUpload").modal('open');
         });
     });
@@ -213,26 +213,28 @@ function addRequirement(reqJSON) {
 function getRequisits(){
     $.ajax({
         method: "GET",
-        url: urlAjax + "/api/profilesandrequirements",
+        url: urlAjax + "/api/profileandrequirements",
         dataType: "json",
         headers: ({
             "Authorization": "Token " + localStorage.getItem("token")
         })
     }).done(function(xhr) {
-        setRequisits(xhr);
+        console.log(xhr);
+        setRequisits(xhr.Requirements);
+        
     }).fail(function() {
         console.error("Internal log - Error: no se han podido recuperar los requisitos del usuario");
-        addRequirement({NameRequisit: "DNI Anvers"});
-        addRequirement({NameRequisit: "DNI Revers"});
-        addRequirement({NameRequisit: "Sanit\u00E0ria"});
+        addRequirement("DNI Anvers");
+        addRequirement("DNI Revers");
+        addRequirement("Sanit\u00E0ria");
     });
 }
 
 function setRequisits(xhr) {
     console.log(xhr);
-    for (const key in xhr.Requirements) {
-        if (Object.hasOwnProperty.call(xhr.Requirements, key)) {
-            addRequirement(xhr.Requirements[key]);
+    for (const key in xhr) {
+        if (Object.hasOwnProperty.call(xhr, key)) {
+            addRequirement(xhr[key]);
         }
     }
 }
@@ -266,7 +268,7 @@ function onSuccess(imageData) {
     }).done(function(xhr) {
         
     }).error(function() {
-        sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
         $("#loading").modal('close');
     }).always(function() {
         $("#loading").modal('close');
@@ -439,7 +441,7 @@ function getUserData(){
         $("#dadesTutor2")[0].innerHTML=userData.tutor_2 ? userData.tutor_2 : "-";
 
         // Side nav info
-        $("#sideNavUsername")[0].innerHTML = (userData.first_name ? userData.first_name : "-") + (userData.last_name ? userData.last_name : "-");
+        $("#sideNavUsername")[0].innerHTML = (userData.first_name ? userData.first_name : "-") + " " + (userData.last_name ? userData.last_name : "-");
         $("#sideNavEmail")[0].innerHTML = userData.email ? userData.email : "-";
         setStatus(statusD, 1);
     }).fail(function() {

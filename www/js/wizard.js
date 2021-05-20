@@ -56,12 +56,10 @@ function wizardPageControl() {
         modalPage = 3;
     } else if (modalPage === 3) {
         updateWizard();
-        $("#wizard").modal('close'); 
     }
 }
 
 function updateWizard(){
-    
     $.ajax({
         method: "POST",
         url: urlAjax + "/api/updatewizard",
@@ -78,8 +76,10 @@ function updateWizard(){
     }).done(function(xhr) {
         console.log(xhr.status);
         textPageImageRights = xhr.data;
+        $("#wizard").modal('close'); 
     }).fail(function() {
-        sendToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        //sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
+        $("#wizard").modal('close'); 
     }).always(function() {
         
     });
@@ -189,6 +189,14 @@ function getImageRightsText() {
 }
 
 // Funciones generales
+function sendErrorToast(content) {
+    M.toast({html: content, displayLength: 3000, classes: 'rounded red-gradient'});
+}
+
+function sendToast(content) {
+    M.toast({html: content, displayLength: 3000, classes: 'rounded blue-gradient'});
+}
+
 function checkCheckboxById(id) {
     $("#" + id + "[name=perfils]").prop("checked", true);
 }
