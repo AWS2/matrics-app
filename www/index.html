@@ -8,8 +8,9 @@
 
 	<!-- cordova-headers -->
 	<meta http-equiv="Content-Security-Policy"
-		content="default-src http://localhost:8001 http://api-matrics-test.ieti.cat:8000 http://34.203.46.101:8000 https://sis-t.redsys.es:25443/sis https://accounts.google.com https://apis.google.com/js/platform.js https://apis.google.com https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js https://fonts.gstatic.com 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src https://fonts.googleapis.com 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+		content="default-src http://3.220.37.220:8000 https://matrics-test.ieti.cat https://sis-t.redsys.es:25443/sis https://accounts.google.com https://apis.google.com/js/platform.js https://apis.google.com https://code.jquery.com/ https://fonts.gstatic.com 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src https://fonts.googleapis.com 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
 	<meta name="format-detection" content="telephone=no">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
 	<meta name="msapplication-tap-highlight" content="no">
 
 	<!-- CSS  -->
@@ -179,7 +180,7 @@
 
 	<!-- Tab UFs -->
 	<div id="ufTab" class="container custom-width-80">
-		<h5 class="center-align">Jardineria i floristeria</h5>
+		<h5 id="cicleName" class="center-align">Jardineria i floristeria</h5>
 		<div class="row valign-wrapper custom-margin-bottom-0">
 			<div class="col s6">
 				<a id="saveUFsButton" class="waves-effect waves-light custom-display-block custom-margin-auto custom-margin-top-bottom-1-5em blue-gradient btn custom-border-radius center-align">Guardar</a>
@@ -199,21 +200,7 @@
 			</div>
 		</div>
 		
-		<ul id="ufList" class="collapsible custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-30vh">
-			<!-- TEMP DATA - This ul should be empty on PRO -->
-			<!-- <li> 
-					<div class="collapsible-header valign-wrapper">
-						<label style="margin-left: 0.5em; max-width: 95%; white-space: break-spaces;"><input type="checkbox"/><span></span></label><label style="margin-left: 0.5em; max-width: 95%; white-space: break-spaces; font-size: 1em"><span>M01 Formacion en centros de trabajo XD</span></label>
-						<i id="expandable" class="material-icons circle blue-text-gradient-modal">expand_more</i>
-					</div> 
-					<div id="modul-i" class="collapsible-body custom-padding-0"> 
-						<p>
-							<label style="margin-left: 2.5em; max-width: 95%; white-space: break-spaces; display: block;"><input id="chk_modul-+i+" type="checkbox"/><span>UF01 esto tiene un nombre largisimo XDDD</span></label> 
-						</p>
-					</div>
-				</li> -->
-			<!-- TEMP DATA - This ul should be empty on PRO -->
-		</ul>
+		<ul id="ufList" class="collapsible custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-30vh"></ul>
 
 		<div class="divider custom-margin-1em"></div>
 
@@ -222,11 +209,11 @@
 				<tbody>
 					<tr>
 						<td class="custom-padding-left-1em">Descompte:</td>
-						<td id="paymentDiscount" class="right-align custom-padding-right-1em">40,25€</td>
+						<td id="paymentDiscount" class="right-align custom-padding-right-1em">180€</td>
 					</tr>
 					<tr>
 						<td class="custom-padding-left-1em">Preu total:</td>
-						<td id="paymentPrice" class="right-align custom-padding-right-1em">200€</td>
+						<td id="paymentPrice" class="right-align custom-padding-right-1em">246,12€</td>
 					</tr>
 				</tbody>
 			</table>
@@ -236,7 +223,7 @@
 			<input type="hidden" name="Ds_SignatureVersion" value="HMAC_SHA256_V1"/>
 			<input type="hidden" name="Ds_MerchantParameters"/>
 			<input type="hidden" name="Ds_Signature"/>
-			<input type="hidden" id="tfAmount" value="200"><br/>
+			<input type="hidden" id="tfAmount" value="246,12"><br/>
 			<input type="submit" value="M&egrave;todes de pagament" class="custom-border-radius btn-large blue custom-margin-bottom-1em"/>
 		</form>
 	</div>
@@ -315,18 +302,15 @@
 			<!--  Inici -->
 			<div id="modal-content-container" class="container custom-padding-1em">
 				<h4>Benvingut a <br /><span class="blue-text-gradient-modal">Matrics IETI</span></h4>
-				<p>Aquesta aplicació et permetr&agrave; matricular-te al cicle formatiu que t'hagis preinscrit de forma
-					r&agrave;pida i senzilla.</p>
-				<p>Per comen&ccedil;ar, et farem un parell de preguntes per determinar el teu perfil,
-					prefer&egrave;ncies i requisits de la matricula.</p>
+				<p>Aquesta aplicació et permetr&agrave; matricular-te al cicle formatiu que t'hagis preinscrit de formar&agrave;pida i senzilla.</p>
+				<p>Per comen&ccedil;ar, et farem un parell de preguntes per determinar el teu perfil, prefer&egrave;ncies i requisits de la matricula.</p>
 				<p>Prem el bot&oacute; amb la fletxa a la part inferior dreta de la pantalla per continuar.</p>
 			</div>
 
 
 		</div>
 		<div class="fixed-action-btn">
-			<a id="wizard-floating-btn"
-				class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
+			<a id="wizard-floating-btn" class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
 				<i class="large material-icons">arrow_forward</i>
 			</a>
 		</div>
@@ -348,8 +332,7 @@
 
 		</div>
 		<div class="fixed-action-btn">
-			<a id="error-data-floating-btn"
-				class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
+			<a id="error-data-floating-btn" class="btn-floating btn-large blue pulse blue-gradient waves-effect waves-light">
 				OK
 			</a>
 		</div>
@@ -357,7 +340,7 @@
 
 	<!--  Scripts-->
 	<script src="cordova.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	<script src="js/materialize.min.js"></script>
 	<script src="js/crypto-js.js"></script>
 	<script src="js/init.js"></script>

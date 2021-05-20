@@ -68,6 +68,7 @@
 })(jQuery);
 
 var urlAjax = "https://matrics-test.ieti.cat";
+// var urlAjax = "http://3.220.37.220:8000";
 
 document.addEventListener('deviceready', onDeviceReady, false);
 

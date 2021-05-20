@@ -13,9 +13,23 @@ let skipLogin = false;
 
 async function onDeviceReady() {
     if(localStorage.getItem("token")){
-       window.location.replace("index.html");
-    }
+        window.location.replace("index.html");
 
+        $.ajax({
+            method: "GET",
+            url: urlAjax + "/api/verify",
+            dataType: "json",
+            headers: ({
+                "UID": localStorage.getItem("UID"),
+                // "Authorization": localStorage.getItem("token")
+            })
+        }).done(function(xhr) {
+            if(xhr == true) {
+                window.location.replace("index.html");
+            }
+        });
+    }
+    
     await sleep(2000);
     
     loginButton.onclick = async function() {
@@ -56,13 +70,20 @@ async function ajaxLogin() {
     }).done(function(xhr) {
         if (xhr.Token) {
             localStorage.setItem("token",xhr.Token);
+            localStorage.setItem("UID", xhr.UserId);
+
+            if(xhr.BoolWizard == true){
+                localStorage.setItem("skipWizard", "true");
+            }
+
             login = true;
+
         }else{
             sendErrorToast("L\'email o la contrasenya no s\u00F3n correctes.");
             $("#loading").modal('close');
             login = false;
         }
-    }).error(function() {
+    }).fail(function() {
         sendErrorToast("No s'ha pogut connectar amb el servidor. Si us plau torna a intentar-ho m\u00E9s tard.");
         $("#loading").modal('close');
         login = false;
