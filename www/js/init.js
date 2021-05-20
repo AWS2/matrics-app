@@ -2,7 +2,7 @@
     $(function() {
         // Wizard modal options:
         var modalWizard = document.querySelectorAll('#wizard');
-        M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%'});
+        M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%', onCloseEnd: getAllData});
 
         // Loading modal options:
         var modalLoading = document.querySelectorAll('#loading');
