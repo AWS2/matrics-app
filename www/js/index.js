@@ -62,15 +62,6 @@ async function onDeviceReady() {
         window.location.replace("login.html");
     });
 
-    // Realizar funcion para recoger las UFs del ciclo del usuario
-    getUfs();
-
-    // Realizar funcion para recoger los requisitos
-    getRequisits();
-
-    // Realizar funcion para recoger datos personales
-    getUserData(localStorage.getItem("token"));
-
     // Controlar los iconos de los collapsibles
     checkExpandables();
 
@@ -138,6 +129,18 @@ async function onDeviceReady() {
 
     // Animacion para quitar el blur inicial (SIEMPRE AL FINAL DE LA FUNCION onDeviceReady)
     $("#body").addClass("custom-blur-off");
+}
+
+function getAllData() {
+    // Realizar funcion para recoger las UFs del ciclo del usuario
+    getUfs();
+
+    // Realizar funcion para recoger los requisitos
+    getRequisits();
+
+    // Realizar funcion para recoger datos personales
+    getUserData(localStorage.getItem("token"));
+    checkExpandables();
 }
 
 // Funciones Tab Inici (Dashboard):
