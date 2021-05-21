@@ -1,5 +1,16 @@
 (function($) {
     $(function() {
+        // Wizard modal options:
+        var modalWizard = document.querySelectorAll('#wizard');
+        M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%', onCloseEnd: getAllData});
+
+        // Wizard modal css:
+        $(".modal-content").css("padding", "0px");
+        $("#wizard").css("max-height", "85%");
+        $("#wizard").css("overflow", "hidden");
+        $("#wizard").addClass("custom-height-90");
+        $("#wizard").addClass("custom-border-radius");
+        
         if (!JSON.parse(localStorage.getItem("skipWizard"))) {
             // Inicio del wizard:
             $("#wizard").modal('open');

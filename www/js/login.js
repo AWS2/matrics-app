@@ -11,7 +11,7 @@ let passwordField = document.getElementById("passwordField");
 // Testing
 let skipLogin = false;
 
-async function onDeviceReady() {
+function onDeviceReady() {
     if(localStorage.getItem("token")){
         window.location.replace("index.html");
 
@@ -29,8 +29,6 @@ async function onDeviceReady() {
             }
         });
     }
-    
-    await sleep(2000);
     
     loginButton.onclick = async function() {
         if (skipLogin) {
