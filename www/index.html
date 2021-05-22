@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,7 +23,7 @@
 	<nav id="navbar" class="nav-extended blue custom-border-radius-bottom custom-width-100 custom-margin-auto" role="navigation">
 		<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center blue-text-gradient">Matrics IETI</a> 
 			<ul id="slide-out" class="sidenav custom-overflow-y-hidden custom-max-height-100">
-				<li><div class="user-view" style="box-shadow: 0px 0px 10px 0px #2196F3;">
+				<li><div class="user-view" style="box-shadow: 0px 0px 4px 0px #2196F3;">
 					<div class="background">
 						<img src="img/Misc/sideNavBackgroundV2.jpg">
 					</div>
@@ -31,11 +31,10 @@
 					<a><span class="white-text name"><h6 id="sideNavUsername">--</h6></span></a>
 					<a><span id="sideNavEmail" class="white-text email">--</span></a>
 				  </div></li>
-				<li><a class="dropdown-trigger" href="#!" data-target="dropdownTheme">Tema<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i></a></li>
+				<li><a id="sideNavTheme" class="dropdown-trigger" href="#!" data-target="dropdownTheme">Tema<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i></a></li>
 				<ul id='dropdownTheme' class='dropdown-content'>
-					<li><a href="#!">Tema clar</a></li>
-					<li><a href="#!">Tema fosc</a></li>
-				  	<li><a href="#!">Tema del sistema</a></li>
+					<li><a id="sideNavLightTheme">Tema clar</a></li>
+					<li><a id="sideNavDarkTheme">Tema fosc</a></li>
 				</ul>
 				<li><a href="#!">Ajuda</a></li>
 				<li><a id="btnLogout" href="#!">Tancar sessi&oacute;</a></li>
@@ -59,7 +58,7 @@
 	<!-- Tab Inici -->
 	<div id="dashboardTab" class="container custom-width-80">
 		<h5 class="custom-margin-top-bottom-1em">Estat de matriculaci&#243;:</h5>
-		<ul class="collapsible custom-border-radius custom-scroll-y">
+		<ul class="collapsible custom-border custom-border-radius custom-scroll-y">
 			<li>
 				<div class="collapsible-header ">
 					<i id="expandable" name="dashboardTab" class="material-icons circle blue-text-gradient-modal" style="margin-left: 0px;margin-right: 0.5em;text-align: center;">expand_more</i>
@@ -149,7 +148,23 @@
 	<div id="reqTab" class="container custom-padding-top-1em custom-width-80">
 		<div id="reqList" class="custom-margin-top-1em custom-border custom-border-radius custom-scroll-y" style="max-height: 75vh;">
 			<table>
-				<tbody id="reqBody"></tbody>
+				<tbody id="reqBody">
+					<tr id="reqLoading">
+						<div id="reqLoaderContainer" style="display: flex;flex-direction: row;" class="valign-wrapper">
+							<div id="reqLoader" class="preloader-wrapper small active" style="margin: 1.5em;">
+								<div class="spinner-layer spinner-blue-only">
+									<div class="circle-clipper left">
+										<div class="circle"></div>
+									</div>
+									<div class="gap-patch">
+										<div class="circle"></div>
+									</div>
+								</div>
+							</div>
+							<span>Carregant perfils</span>
+						</div>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 
@@ -198,7 +213,7 @@
 			</div>
 		</div>
 		
-		<ul id="ufList" class="collapsible custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-30vh"></ul>
+		<ul id="ufList" class="collapsible custom-border custom-border-radius custom-scroll-y custom-scroll-x-hidden custom-height-30vh"></ul>
 
 		<div class="divider custom-margin-1em"></div>
 

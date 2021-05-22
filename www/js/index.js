@@ -1,5 +1,8 @@
 (function($) {
     $(function() {
+        // Aplicar el tema guardado
+        toggleTheme(localStorage.getItem("data-theme") == "dark" ? 1 : 0);
+
         // Wizard modal options:
         var modalWizard = document.querySelectorAll('#wizard');
         M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%', onCloseEnd: getAllData});
@@ -19,6 +22,8 @@
             modalBtn.on( "click", function() {
                 wizardPageControl();
             });
+        } else {
+            getAllData();
         }
     });
 })(jQuery); 
@@ -29,6 +34,8 @@ document.addEventListener('deviceready', onDeviceReady, false);
 let body = document.getElementById("body");
 
 // Variables side nav:
+let lightMode;
+let darkMode;
 let logoutBtn;
 
 // Variables Tab Inici (Dashboard):
@@ -65,6 +72,15 @@ let modalDataBtn = $("#error-data-floating-btn");
 
 // Funcion inicial
 async function onDeviceReady() {
+    // Botones para la seleccion del tema de la app
+    lightMode = $("#sideNavLightTheme").on("click", async function() {
+        toggleTheme(0);
+    });
+
+    darkMode = $("#sideNavDarkTheme").on("click", async function() {
+        toggleTheme(1);
+    });
+
     // Boton de Tancar Sessio en el SideNav
     logoutBtn = $("#btnLogout").on("click", async function(){
         localStorage.setItem("token", "");
@@ -225,6 +241,8 @@ function addRequirement(name) {
 }
 
 function getRequisits(){
+    $("#reqLoader").css("margin", "1.5em");
+    
     $.ajax({
         method: "GET",
         url: urlAjax + "/api/profileandrequirements",
@@ -241,6 +259,10 @@ function getRequisits(){
         addRequirement("DNI Anvers");
         addRequirement("DNI Revers");
         addRequirement("Sanit\u00E0ria");
+    }).always(function() {
+        $("#reqLoading").remove();
+        $("#reqLoaderContainer").remove();
+        $("#reqLoader").remove();
     });
 }
 

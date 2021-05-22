@@ -9,10 +9,12 @@ let emailField = document.getElementById("emailField");
 let passwordField = document.getElementById("passwordField");
 
 // Testing
-let skipLogin = false;
+let skipLogin = true;
 
-function onDeviceReady() {
-    if(localStorage.getItem("token")){
+async function onDeviceReady() {
+    toggleTheme(localStorage.getItem("data-theme") == "dark" ? 1 : 0);
+
+    if (localStorage.getItem("token")) {
         window.location.replace("index.html");
 
         $.ajax({
@@ -29,6 +31,8 @@ function onDeviceReady() {
             }
         });
     }
+
+    await sleep(2000);
     
     loginButton.onclick = async function() {
         if (skipLogin) {
