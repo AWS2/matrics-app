@@ -1,8 +1,5 @@
 (function($) {
     $(function() {
-        // Aplicar el tema guardado
-        toggleTheme(localStorage.getItem("data-theme") == "dark" ? 1 : 0);
-
         // Wizard modal options:
         var modalWizard = document.querySelectorAll('#wizard');
         M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%', onCloseEnd: getAllData});
@@ -72,13 +69,16 @@ let modalDataBtn = $("#error-data-floating-btn");
 
 // Funcion inicial
 async function onDeviceReady() {
+    // Aplicar el tema guardado
+    toggleTheme(localStorage.getItem("data-theme") == "dark" ? "dark" : "light");
+
     // Botones para la seleccion del tema de la app
     lightMode = $("#sideNavLightTheme").on("click", async function() {
-        toggleTheme(0);
+        toggleTheme("light");
     });
 
     darkMode = $("#sideNavDarkTheme").on("click", async function() {
-        toggleTheme(1);
+        toggleTheme("dark");
     });
 
     // Boton de Tancar Sessio en el SideNav
@@ -153,6 +153,9 @@ async function onDeviceReady() {
     });
 
     await sleep(1000);
+
+    // Cambiar un parametro de css de la carga de requisitos
+    $("#reqLoader").css("margin", "1.5em");
 
     // Animacion para quitar el blur inicial (SIEMPRE AL FINAL DE LA FUNCION onDeviceReady)
     $("#body").addClass("custom-blur-off");
@@ -241,8 +244,6 @@ function addRequirement(name) {
 }
 
 function getRequisits(){
-    $("#reqLoader").css("margin", "1.5em");
-    
     $.ajax({
         method: "GET",
         url: urlAjax + "/api/profileandrequirements",

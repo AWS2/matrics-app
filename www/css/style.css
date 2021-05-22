@@ -5,7 +5,6 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
 
-  background-color: var(--background-primary);
   color: var(--font-color-primary);
 
   font-family: 'esteve-terrades-raleway-regular';
@@ -21,7 +20,12 @@ body {
   outline:none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  transition: all 1s, background-color 0.2s;
+  transition: all 1s, background-color 0.3s;
+}
+
+body {
+  transition: background-color 0.3s;
+  background-color: var(--background-primary);
 }
 
 :root, html[data-theme='light'] {
@@ -47,7 +51,7 @@ body {
   --divider: #121212;
   --box-shadow: 0 2px 2px 0 rgba(23, 23, 23, 0.5), 0 3px 1px -2px rgba(23, 23, 23, 0.5), 0 1px 5px 0 rgba(23, 23, 23, 0.5);
 
-  --background-gradient-variant-1: linear-gradient(45deg, rgba(33,150,243,1) -25%, rgba(18,18,18,1) 125%);
+  --background-gradient-variant-1: linear-gradient(45deg, rgba(33,150,243,1) -10%, rgba(18,18,18,1) 130%);
 }
 
 /* Fonts: */
@@ -243,6 +247,10 @@ body {
   border-radius: 0px 0px 20px 20px;
 }
 
+.custom-background {
+  background-color: var(--background-primary);
+}
+
 /* Color gradients: */
 .blue-gradient {
   background: var(--background-gradient-variant-1);
@@ -404,6 +412,18 @@ blockquote {
 
 .divider {
   background-color: var(--divider);
+}
+
+.modal {
+  box-shadow: var(--box-shadow);
+}
+
+.modal-footer {
+  background-color: var(--background-primary) !important;
+}
+
+.btn-flat {
+  color: var(--font-color-primary);
 }
 
 [type="checkbox"]:checked + span:not(.lever)::before {

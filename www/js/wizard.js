@@ -73,6 +73,7 @@ function updateWizard(){
         headers: ({
             "Authorization": "Token " + localStorage.getItem("token")
           }),
+        timeout: 5000
     }).done(function(xhr) {
         console.log(xhr.status);
         textPageImageRights = xhr.data;

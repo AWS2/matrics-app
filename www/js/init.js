@@ -70,31 +70,28 @@ function onDeviceReady() {
         StatusBar.backgroundColorByHexString('#2196F3');
         NavigationBar.backgroundColorByHexString('#FFFFFF', true);
     }
+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        toggleTheme("dark");
+    }
 }
 
 function toggleTheme(theme) {
     // 0 - Light
     // 1 - Dark
+    
+    NavigationBar.backgroundColorByHexString(theme == "dark" ? "#232323" : "#FFFFFF", true);
+
+    if ($("#sideNavTheme").length > 0) {
+        $("#sideNavTheme")[0].innerHTML = theme == "dark" ? 'Tema fosc<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>' : 'Tema clar<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>';
+    }
+    console.log(theme + localStorage.getItem("data-theme"));
     if (localStorage.getItem("data-theme")) {
-        if (localStorage.getItem("data-theme") != theme) {
-            $("html").attr("data-theme", theme == 1 ? "dark" : "light");
-
-            if ($("#sideNavTheme").length > 0) {
-                $("#sideNavTheme")[0].innerHTML = theme == 1 ? 'Tema fosc<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>' : 'Tema clar<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>';
-            }
-            
-            localStorage.setItem("data-theme", theme == 1 ? "dark" : "light");
-        }
+        $("html").attr("data-theme", theme);
+        localStorage.setItem("data-theme", theme);
     } else {
-        if (localStorage.getItem("data-theme") != theme) {
-            $("html").attr("data-theme", theme == 1 ? "dark" : "light");
-
-            if ($("#sideNavTheme").length > 0) {
-                $("#sideNavTheme")[0].innerHTML = theme == 1 ? 'Tema fosc<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>' : 'Tema clar<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>';
-            }
-
-            localStorage.setItem("data-theme", theme == 1 ? "dark" : "light");
-        }
+        $("html").attr("data-theme", theme);
+        localStorage.setItem("data-theme", theme);
     }
 }
 

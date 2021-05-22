@@ -12,7 +12,7 @@ let passwordField = document.getElementById("passwordField");
 let skipLogin = true;
 
 async function onDeviceReady() {
-    toggleTheme(localStorage.getItem("data-theme") == "dark" ? 1 : 0);
+    toggleTheme(localStorage.getItem("data-theme") == "dark" ? "dark" : "light");
 
     if (localStorage.getItem("token")) {
         window.location.replace("index.html");
