@@ -85,7 +85,7 @@ function toggleTheme(theme) {
     if ($("#sideNavTheme").length > 0) {
         $("#sideNavTheme")[0].innerHTML = theme == "dark" ? 'Tema fosc<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>' : 'Tema clar<i class="material-icons right" style="margin-right: auto;">arrow_drop_down</i>';
     }
-    console.log(theme + localStorage.getItem("data-theme"));
+
     if (localStorage.getItem("data-theme")) {
         $("html").attr("data-theme", theme);
         localStorage.setItem("data-theme", theme);
