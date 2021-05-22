@@ -1,7 +1,5 @@
 (function($) {
     $(function() {
-       
-
         // Loading modal options:
         var modalLoading = document.querySelectorAll('#loading');
         M.Modal.init(modalLoading, {opacity: 0.5, dismissible: false, endingTop: '35%'});
