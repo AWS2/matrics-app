@@ -2,7 +2,7 @@
     $(function() {
         // Wizard modal options:
         var modalWizard = document.querySelectorAll('#wizard');
-        M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%'});
+        M.Modal.init(modalWizard, {opacity: 0.7, dismissible: false, endingTop: '7%', onCloseEnd: getAllData});
 
         // Loading modal options:
         var modalLoading = document.querySelectorAll('#loading');
@@ -11,6 +11,10 @@
         // Requisits upload modal options:
         var modalUpload = document.querySelectorAll('#reqUpload');
         M.Modal.init(modalUpload, {opacity: 0.5, dismissible: true});
+
+        //Wrong user data modal options
+        var modalLoginHelper = document.querySelectorAll('#loginHelper');
+        M.Modal.init(modalLoginHelper, {opacity: 0.5, dismissible: true, endingTop: '50%'});
 
         //Wrong user data modal options
         var modalErrorData = document.querySelectorAll('#wrongDataModal');
@@ -63,7 +67,8 @@
     });
 })(jQuery);
 
-var urlAjax = "https://matrics-test.ieti.cat";
+//var urlAjax = "https://matrics-test.ieti.cat";
+var urlAjax = "http://3.220.37.220:8000";
 
 document.addEventListener('deviceready', onDeviceReady, false);
 
@@ -75,3 +80,7 @@ function onDeviceReady() {
         NavigationBar.backgroundColorByHexString('#FFFFFF', true);
     }
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
